@@ -44,16 +44,16 @@ public class webService {
         
          Usuario usu = new Usuario();
         try{
-        String query = "{call LoginUsuario(?,?)}";
+        String query = "{call LoginUsuario(?,?,?)}";
        
         CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
         ps.setString(1, usuario);
         ps.setString(2, clave);
-       // ps.registerOutParameter(1, Types.VARCHAR);
         
-       ps.registerOutParameter(1, Types.VARCHAR);
-       ps.registerOutParameter(2, Types.VARCHAR);
-       ps.registerOutParameter(3, Types.INTEGER);
+        
+        ps.registerOutParameter(1, Types.VARCHAR);
+        ps.registerOutParameter(2, Types.VARCHAR);
+        ps.registerOutParameter(3, Types.INTEGER);
          ps.execute();
     
          usu.setUsuario(ps.getString(1));
