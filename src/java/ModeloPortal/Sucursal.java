@@ -14,6 +14,23 @@ public class Sucursal {
          int idSucursal;
           String ciudad;
     String[] direccion;
+    String direcionUnica;
+
+    public int getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(int idSucursal) {
+        this.idSucursal = idSucursal;
+    }
+
+    public String getDirecionUnica() {
+        return direcionUnica;
+    }
+
+    public void setDirecionUnica(String direcionUnica) {
+        this.direcionUnica = direcionUnica;
+    }
 
         public int getIdsucursal() {
                 return idSucursal;

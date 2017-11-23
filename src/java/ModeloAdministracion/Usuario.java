@@ -11,8 +11,8 @@ package ModeloAdministracion;
  */
 public class Usuario {
         
-        
-        int idUsuario;
+  
+    int idUsuario;
     String usuario;
     String clave;
     int idTipoUsuario;
@@ -58,6 +58,7 @@ public class Usuario {
                 this.idTienda = idTienda;
         }
         
+      
         
         
 }

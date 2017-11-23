@@ -44,7 +44,7 @@ public class webService {
         
          Usuario usu = new Usuario();
         try{
-        String query = "{call LoginUsuario(?,?,?)}";
+        String query = "{call LoginUsuario(?,?,?,?)}";
        
         CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
         ps.setString(1, usuario);
@@ -54,12 +54,13 @@ public class webService {
         ps.registerOutParameter(1, Types.VARCHAR);
         ps.registerOutParameter(2, Types.VARCHAR);
         ps.registerOutParameter(3, Types.INTEGER);
+        ps.registerOutParameter(4, Types.INTEGER);
          ps.execute();
     
          usu.setUsuario(ps.getString(1));
          usu.setClave(ps.getString(2));
          usu.setIdTipoUsuario(ps.getInt(3));
-        
+         usu.setIdTienda(ps.getInt(4));
          return usu;
         
         }
@@ -68,7 +69,6 @@ public class webService {
            
            
         }
-        
         usu.setIdTipoUsuario(0);
         return usu;
     }
@@ -1006,6 +1006,68 @@ public class webService {
                 
         }
 
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "agregarProducto")
+    public boolean agregarProducto(@WebParam(name = "codigobarra") int codigobarra, @WebParam(name = "marca") String marca, @WebParam(name = "nombre") String nombre, @WebParam(name = "rutaimagen") String rutaimagen, @WebParam(name = "precio") int precio, @WebParam(name = "fechaexpiracion") String fechaexpiracion, @WebParam(name = "idcategoria") int idcategoria) {
+        try
+        {
+            String query = "{call AgregarProducto(?,?,?,?,?,?,?)}";
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, codigobarra);
+            ps.setString(2, marca);
+            ps.setString(3, nombre);
+            ps.setString(4, rutaimagen);
+            ps.setInt(5, precio);
+            ps.setString(6, fechaexpiracion);
+            ps.setInt(7, idcategoria);
+            
+            ps.executeQuery();
+            return true;
+        }
+        catch(SQLException | ClassNotFoundException e)
+        {
+            
+        }
+        return false;
+    }
+
+    /**
+     * Web service operation
+     * @param idtienda
+     * @return 
+     */
+    @WebMethod(operationName = "traerSucursalesxIdTienda")
+    public ArrayList<Sucursal> traerSucursalesxIdTienda(@WebParam(name = "idtienda") int idtienda) {
+        ArrayList<Sucursal> listasucursal = new ArrayList<>();
+        
+        try {
+            String query = "{call listarSucursalesxIdTienda(?,?)}";
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, idtienda);
+            ps.registerOutParameter(2, OracleTypes.CURSOR);
+            ps.executeQuery();
+            
+            ResultSet rs = (ResultSet) ps.getObject(2);
+            while(rs.next()){
+                Sucursal sucursal = new Sucursal();
+                
+                sucursal.setIdsucursal(rs.getInt(1));
+                sucursal.setCiudad(rs.getString(2));
+                 sucursal.setDirecionUnica(rs.getString(3));
+                
+                listasucursal.add(sucursal);
+            }
+            rs.close();
+        } catch (SQLException | ClassNotFoundException e) {
+        }
+        return listasucursal;
+
+
+    }
     
    
     

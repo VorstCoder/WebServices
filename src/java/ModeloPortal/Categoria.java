@@ -14,6 +14,8 @@ public class Categoria {
     
     int idcategoria;
     String nombrecategoria;
+    
+  
 
     public int getIdcategoria() {
         return idcategoria;
