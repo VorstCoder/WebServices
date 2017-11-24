@@ -35,15 +35,18 @@ public class prueba extends HttpServlet {
                 response.setContentType("text/html;charset=UTF-8");
                 try (PrintWriter out = response.getWriter()) {
                         /* TODO output your page here. You may use following sample code. */
-                       
+                    
                        webService service = new webService();
                        
-                       Usuario usu = new Usuario();
+                  /*     Usuario usu = new Usuario();
                      usu = service.loginUsuario("admin655","admin344");
                      
                      out.println("Usuario: " + usu.getUsuario());
                      out.println("Clave: " + usu.getClave());
                      out.println("ID tipo usuario: " + usu.getIdTipoUsuario());
+                       */
+                  
+                  service.eliminarTiendaxId(7);
                         
                 }
         }

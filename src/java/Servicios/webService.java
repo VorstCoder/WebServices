@@ -447,7 +447,9 @@ public class webService {
               Descuento r = new Descuento();
               r.setIdrubro(rs.getInt(1));
               r.setNombrerubro(rs.getString(2));
-              
+              r.setTope(rs.getInt(3));
+              r.setDescuento(rs.getInt(4));
+              r.setPuntos(rs.getInt(5));
               listado.add(r);
           
           }
@@ -1038,6 +1040,7 @@ public class webService {
      * Web service operation
      * @param idtienda
      * @return 
+         * @throws java.io.IOException 
      */
     @WebMethod(operationName = "traerSucursalesxIdTienda")
     public ArrayList<Sucursal> traerSucursalesxIdTienda(@WebParam(name = "idtienda") int idtienda) {
@@ -1051,24 +1054,436 @@ public class webService {
             ps.registerOutParameter(2, OracleTypes.CURSOR);
             ps.executeQuery();
             
-            ResultSet rs = (ResultSet) ps.getObject(2);
-            while(rs.next()){
-                Sucursal sucursal = new Sucursal();
-                
-                sucursal.setIdsucursal(rs.getInt(1));
-                sucursal.setCiudad(rs.getString(2));
-                 sucursal.setDirecionUnica(rs.getString(3));
-                
-                listasucursal.add(sucursal);
-            }
-            rs.close();
+                try (ResultSet rs = (ResultSet) ps.getObject(2)) {
+                        while(rs.next()){
+                                Sucursal sucursal = new Sucursal();
+                                
+                                sucursal.setIdsucursal(rs.getInt(1));
+                                sucursal.setCiudad(rs.getString(2));
+                                sucursal.setDirecionUnica(rs.getString(3));
+                                sucursal.setRegion(rs.getString(4));
+                                listasucursal.add(sucursal);
+                        }   }
         } catch (SQLException | ClassNotFoundException e) {
         }
         return listasucursal;
 
 
     }
+
+        /**
+         * Web service operation
+         * @param idtienda
+         * @param nombreTienda
+         * @return 
+         */
+        @WebMethod(operationName = "registrarTienda")
+        public boolean registrarTienda(@WebParam(name = "idtienda") int idtienda, @WebParam(name = "nombreTienda") String nombreTienda) {
+               
+                    boolean estado = false;
+        
+        try{
+        
+            String query = "{call registrarTienda(?,?)}";
+            
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, idtienda);
+            ps.setString(2, nombreTienda);
+        
+            ps.executeQuery();
+            
+            estado = true;
+            return estado;
+            
+        
+        }
+        
+        
+        catch(SQLException | ClassNotFoundException ex){}
+        
+        
+        
+        return estado;
+                
+                
+        }
+
+        /**
+         * Web service operation
+         * @param idSucursal
+         * @param direccion
+         * @param ciudad
+         * @param region
+         * @param idTienda
+         * @return 
+         */
+        @WebMethod(operationName = "registrarSucursal")
+        public boolean registrarSucursal(@WebParam(name = "idSucursal") int idSucursal, @WebParam(name = "direccion") String direccion, @WebParam(name = "ciudad") String ciudad, @WebParam(name = "region") String region, @WebParam(name = "idTienda") int idTienda) {
+               
+                
+                
+       boolean estado = false;
+        
+        try{
+        
+            String query = "{call registrarSucursal(?,?,?,?,?)}";
+            
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, idSucursal);
+            ps.setString(2, direccion);
+            ps.setString(3, ciudad);
+            ps.setString(4, region);
+            ps.setInt(5, idTienda);
+            ps.executeQuery();
+            
+            estado = true;
+            return estado;
+            
+        
+        }
+        
+        
+        catch(SQLException | ClassNotFoundException ex){}
+        
+        
+        
+        return estado;
+                
+        }
+
+        /**
+         * Web service operation
+         * @param idTienda
+         * @return 
+         */
+        @WebMethod(operationName = "eliminarTiendaxId")
+        public boolean eliminarTiendaxId(@WebParam(name = "idTienda") int idTienda) {
+               
+                         
+      boolean estado = false;
+        
+        try{
+        
+            String query = "{call eliminarTiendaxId(?)}";
+            
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, idTienda);
+
+        
+            ps.executeQuery();
+            
+            estado = true;
+            return estado;
+                
+        }
+                
+      catch(SQLException | ClassNotFoundException ex){}
+        
+                
+                return estado;
     
+        }
+
+        /**
+         * Web service operation
+         * @param idTienda
+         * @param nombreTienda
+         * @return 
+         */
+        @WebMethod(operationName = "actualizarTiendaxId")
+        public boolean actualizarTiendaxId(@WebParam(name = "idTienda") int idTienda, @WebParam(name = "nombreTienda") String nombreTienda) {
+              
+                
+                                   
+       boolean estado = false;
+        
+        try{
+        
+            String query = "{call actualizarTiendaxId(?,?)}";
+            
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, idTienda);
+            ps.setString(2, nombreTienda);
+        
+            ps.executeQuery();
+            
+            estado = true;
+            return estado;
+                
+        }
+                
+      catch(SQLException | ClassNotFoundException ex){}
+        
+                
+                return estado;
+    
+        }
+
+        /**
+         * Web service operation
+         * @return 
+         */
+        @WebMethod(operationName = "SelectMaxIdSucursal")
+        public int SelectMaxIdSucursal() {
+                
+           
+        try{
+            String query = "{call SelectMaxIdSucursal(?)}";
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            
+    
+           ps.registerOutParameter(1, Types.INTEGER);
+           ps.execute();
+           
+           return ps.getInt(1);
+        
+        }
+        
+        catch(SQLException | ClassNotFoundException ex){
+        
+        }
+        
+        
+        
+        return 0;
+        }
+
+        /**
+         * Web service operation
+         * @param idSucursal
+         * @param direccion
+         * @param ciudad
+         * @param region
+         * @return 
+         */
+        @WebMethod(operationName = "actualizarSucursalxId")
+        public boolean actualizarSucursalxId(@WebParam(name = "idSucursal") int idSucursal, @WebParam(name = "direccion") String direccion, @WebParam(name = "ciudad") String ciudad, @WebParam(name = "region") String region) {
+                
+         boolean estado = false;
+        
+        try{
+        
+            String query = "{call actualizarSucursalxId(?,?,?,?)}";
+            
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, idSucursal);
+            ps.setString(2, direccion);
+             ps.setString(3, ciudad);
+              ps.setString(4, region);
+             
+        
+            ps.executeQuery();
+            
+            estado = true;
+            return estado;
+                
+        }
+                
+      catch(SQLException | ClassNotFoundException ex){}
+        
+                
+                return estado;
+                
+                
+        }
+
+        /**
+         * Web service operation
+         * @param idSucursal
+         * @return 
+         */
+        @WebMethod(operationName = "eliminarSucursalxId")
+        public boolean eliminarSucursalxId(@WebParam(name = "idSucursal") int idSucursal) {
+               
+              
+                 boolean estado = false;
+        
+        try{
+        
+            String query = "{call eliminarSucursalxId(?)}";
+            
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, idSucursal);
+
+        
+            ps.executeQuery();
+            
+            estado = true;
+            return estado;
+                
+        }
+                
+      catch(SQLException | ClassNotFoundException ex){}
+        
+                
+                return estado;
+                
+        }
+
+        /**
+         * Web service operation
+         * @param idRubro
+         * @param nombreRubro
+         * @param tope
+         * @param descuento
+         * @param puntos
+         * @return 
+         */
+        @WebMethod(operationName = "actualizarRubroxId")
+        public boolean actualizarRubroxId(@WebParam(name = "idRubro") int idRubro, @WebParam(name = "nombreRubro") String nombreRubro, @WebParam(name = "tope") int tope, @WebParam(name = "descuento") int descuento, @WebParam(name = "puntos") int puntos) {
+               
+                
+                boolean estado = false;
+        
+        try{
+        
+            String query = "{call actualizarRubroxId(?,?,?,?,?)}";
+            
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, idRubro);
+            ps.setString(2, nombreRubro);
+            ps.setInt(3, tope);
+            ps.setInt(4, descuento);
+            ps.setInt(5, puntos);
+             
+        
+            ps.executeQuery();
+            
+            estado = true;
+            return estado;
+                
+        }
+                
+      catch(SQLException | ClassNotFoundException ex){}
+        
+                
+                return estado;  
+                
+                
+                
+                
+        }
+
+        /**
+         * Web service operation
+         * @param idRubro
+         * @return 
+         */
+        @WebMethod(operationName = "eliminarRubroxId")
+        public boolean eliminarRubroxId(@WebParam(name = "idRubro") int idRubro) {
+               
+                
+                  boolean estado = false;
+        
+        try{
+        
+            String query = "{call eliminarRubroxId(?)}";
+            
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, idRubro);
+
+        
+            ps.executeQuery();
+            
+            estado = true;
+            return estado;
+                
+        }
+                
+      catch(SQLException | ClassNotFoundException ex){}
+        
+                
+                return estado; 
+                
+                
+                
+        }
+
+        /**
+         * Web service operation
+         * @param idRubro
+         * @param nombreRubro
+         * @param tope
+         * @param descuento
+         * @param puntos
+         * @return 
+         */
+        @WebMethod(operationName = "registrarRubro")
+        public boolean registrarRubro(@WebParam(name = "idRubro") int idRubro, @WebParam(name = "nombreRubro") String nombreRubro, @WebParam(name = "tope") int tope, @WebParam(name = "descuento") int descuento, @WebParam(name = "puntos") int puntos) {
+                
+                
+                boolean estado = false;
+        
+        try{
+        
+            String query = "{call registrarRubro(?,?,?,?,?)}";
+            
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            ps.setInt(1, idRubro);
+            ps.setString(2, nombreRubro);
+            ps.setInt(3, tope);
+            ps.setInt(4, descuento);
+            ps.setInt(5, puntos);
+            ps.executeQuery();
+            
+            estado = true;
+            return estado;
+            
+        
+        }
+        
+        
+        catch(SQLException | ClassNotFoundException ex){}
+        
+        
+        
+        return estado;
+                
+                
+        }
+
+        /**
+         * Web service operation
+         * @return 
+         */
+        @WebMethod(operationName = "SelectMaxIdRubro")
+        public int SelectMaxIdRubro() {
+                
+                
+
+        try{
+            String query = "{call SelectMaxIdRubro(?)}";
+            CallableStatement ps = Conexion.getInstancia().getConnection().prepareCall(query);
+            
+            
+           ps.registerOutParameter(1, Types.INTEGER);
+           ps.execute();
+           
+           return ps.getInt(1);
+        
+        }
+        
+        catch(SQLException | ClassNotFoundException ex){
+        
+        }
+        
+        
+        
+        return 0;  
+                
+                
+                
+        }
    
     
     
